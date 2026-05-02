@@ -45,7 +45,6 @@
             box-shadow: var(--shadow);
             transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .logo-container:hover { transform: scale(1.05) rotate(5deg); }
         .logo-container img { width: 100%; height: 100%; object-fit: cover; }
 
         .brand-name {
@@ -88,39 +87,66 @@
             to { opacity: 1; transform: scale(1) translateY(0); } 
         }
 
-        /* Melhoria no grid de preços */
+        /* --- FORMATO DE LISTA VERTICAL --- */
         .price-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
-            gap: 35px; /* Aumentado para não ficarem grudados */
+            display: flex; 
+            flex-direction: column; 
+            gap: 20px; 
             padding: 20px 0;
+            max-width: 900px; 
+            margin: 0 auto; 
         }
         
         .card {
             background: var(--card-bg); 
-            border-top: 4px solid var(--accent-color);
-            padding: 35px; 
-            border-radius: var(--radius-md);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            border-left: 5px solid var(--accent-color); 
+            padding: 25px 35px; 
+            border-radius: 4px; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
             display: flex;
             flex-direction: column;
-            height: 100%;
-            box-sizing: border-box;
+            justify-content: center;
         }
         .card:hover { 
-            transform: translateY(-10px); 
+            transform: translateX(10px); 
             box-shadow: var(--shadow);
-            border-top-width: 8px;
+            border-left-width: 10px; 
         }
 
         .price-tag { 
             color: var(--accent-color); 
             font-weight: 900; 
-            font-size: 1.4rem; 
+            font-size: 1rem; 
             display: block; 
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .card h2 {
+            font-size: 1.6rem; 
+            margin-top: 0;
+            margin-bottom: 10px; 
+            font-weight: 800; 
+            color: #ffffff;
+        }
+
+        .card-desc {
+            color: var(--text-main);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Estilo dos Bullets */
+        .card-desc ul {
+            margin: 0;
+            padding-left: 20px;
+            list-style-type: disc;
+        }
+        .card-desc li {
+            margin-bottom: 4px;
+            color: var(--text-main);
         }
         
         .portfolio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 40px; }
@@ -190,7 +216,6 @@
             color: var(--text-main); font-family: inherit; outline: none; box-sizing: border-box;
             transition: all 0.3s;
         }
-        .input-group input:focus { border-color: var(--accent-color); background: rgba(0,0,0,0.2); }
         
         .modal-actions { display: flex; gap: 15px; margin-top: 35px; }
         .modal-actions button { 
@@ -198,8 +223,6 @@
             border: none; font-weight: 800; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;
         }
         .btn-primary { background: var(--accent-color); color: var(--bg-color); }
-        .btn-primary:hover { background: var(--accent-hover); transform: translateY(-3px); box-shadow: 0 5px 15px rgba(166, 137, 102, 0.4); }
-        .btn-danger { background: #4a1c1c; color: #ff9e9e; }
         .btn-ghost { background: transparent; color: var(--text-dim); border: 2px solid var(--border-color); }
 
         .edit-control-panel {
@@ -210,28 +233,12 @@
             box-shadow: var(--shadow);
         }
         .edit-control-panel.active { transform: translateX(-50%) translateY(0); }
-        .edit-control-panel span { font-weight: 900; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 2px; color: var(--accent-color); }
-
         .editable.editing { outline: 2px dashed var(--accent-color); outline-offset: 4px; cursor: text; border-radius: 4px; }
 
-        .item-row { 
-            display: flex; justify-content: space-between; padding: 20px 25px; 
-            border-bottom: 1px solid var(--border-color); align-items: center;
-            background: rgba(255,255,255,0.03); margin-bottom: 12px; border-radius: 16px;
-        }
-        
-        .media-item-row { 
-            display: grid; grid-template-columns: 1fr 2fr 1fr auto; gap: 15px; 
-            margin-bottom: 20px; align-items: end; background: rgba(0,0,0,0.4); 
-            padding: 25px; border-radius: 20px; border: 1px solid var(--border-color);
-        }
-
-        /* Mobile Adjustments */
         @media (max-width: 768px) {
-            .brand-name { font-size: 1.8rem; letter-spacing: 4px; }
-            .price-grid { gap: 20px; }
-            .media-item-row { grid-template-columns: 1fr; gap: 10px; }
-            .edit-control-panel { flex-direction: column; border-radius: 20px; padding: 20px; width: 80%; transform: translateX(-50%) translateY(300px); }
+            .brand-name { font-size: 1.8rem; }
+            .card { padding: 20px; }
+            .edit-control-panel { flex-direction: column; width: 80%; transform: translateX(-50%) translateY(300px); }
         }
     </style>
 </head>
@@ -273,14 +280,8 @@
     <div id="loginModal" class="modal-overlay">
         <div class="modal-box">
             <h3>Admin Login</h3>
-            <div class="input-group">
-                <label>Access Key</label>
-                <input type="text" id="usernameInput" placeholder="Username">
-            </div>
-            <div class="input-group">
-                <label>Secret</label>
-                <input type="password" id="passwordInput" placeholder="••••••••">
-            </div>
+            <div class="input-group"><label>Username</label><input type="text" id="usernameInput"></div>
+            <div class="input-group"><label>Password</label><input type="password" id="passwordInput"></div>
             <div class="modal-actions">
                 <button class="btn-ghost" onclick="closeModals()">Back</button>
                 <button class="btn-primary" onclick="verifyLogin()">Authorize</button>
@@ -290,45 +291,17 @@
 
     <div id="portfolioListModal" class="modal-overlay">
         <div class="modal-box large">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-                <h3 style="margin:0">Portfolio Management</h3>
-                <button class="btn-primary" style="padding: 10px 25px; font-size: 0.8rem;" onclick="openPortfolioEditor(null)">+ Add New Model</button>
-            </div>
+            <h3>Portfolio Management</h3>
             <div id="pm-list-container"></div>
-            <div class="modal-actions">
-                <button class="btn-ghost" onclick="closeModals()">Done</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="portfolioEditorModal" class="modal-overlay" style="z-index:10001">
-        <div class="modal-box large">
-            <h3>Item Editor</h3>
-            <input type="hidden" id="pm-id">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                <div class="input-group"><label>Model Title</label><input type="text" id="pm-titulo"></div>
-                <div class="input-group"><label>Description</label><input type="text" id="pm-descricao"></div>
-            </div>
-            <label style="font-size: 0.9rem; color: var(--text-dim); font-weight: 700; display: block; margin-bottom: 15px;">Media Rows (3D Models or Images)</label>
-            <div id="pm-medias-container"></div>
-            <button class="btn-ghost" style="width:100%; border-style: dashed; border-radius: 16px; padding: 15px;" onclick="addMediaRow()">+ Add Media Layer</button>
-            <div class="modal-actions">
-                <button class="btn-ghost" onclick="document.getElementById('portfolioEditorModal').classList.remove('active')">Discard</button>
-                <button class="btn-primary" onclick="saveModelData()">Save Changes</button>
-            </div>
+            <div class="modal-actions"><button class="btn-ghost" onclick="closeModals()">Close</button></div>
         </div>
     </div>
 
     <div id="pricesListModal" class="modal-overlay">
         <div class="modal-box large">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-                <h3 style="margin:0">Pricing Management</h3>
-                <button class="btn-primary" style="padding: 10px 25px; font-size: 0.8rem;" onclick="openPriceEditor(null)">+ New Price Tier</button>
-            </div>
+            <h3>Pricing Management</h3>
             <div id="price-list-container"></div>
-            <div class="modal-actions">
-                <button class="btn-ghost" onclick="closeModals()">Done</button>
-            </div>
+            <div class="modal-actions"><button class="btn-ghost" onclick="closeModals()">Close</button></div>
         </div>
     </div>
 
@@ -336,22 +309,21 @@
         <div class="modal-box">
             <h3>Price Tier Details</h3>
             <input type="hidden" id="pr-id">
-            <div class="input-group"><label>Price Range</label><input type="text" id="pr-valor" placeholder="$00 - $00"></div>
+            <div class="input-group"><label>Price Range</label><input type="text" id="pr-valor"></div>
             <div class="input-group"><label>Service Title</label><input type="text" id="pr-titulo"></div>
-            <div class="input-group"><label>Service Details (Use HTML for breaks)</label><textarea id="pr-descricao" rows="5"></textarea></div>
+            <div class="input-group"><label>Service Details (Use &lt;ul&gt;&lt;li&gt; tags)</label><textarea id="pr-descricao" rows="5"></textarea></div>
             <div class="modal-actions">
                 <button class="btn-ghost" onclick="document.getElementById('priceEditorModal').classList.remove('active')">Cancel</button>
-                <button class="btn-primary" onclick="savePriceData()">Update Tier</button>
+                <button class="btn-primary" onclick="savePriceData()">Update</button>
             </div>
         </div>
     </div>
 
-    <!-- PAINEL DE CONTROLO FLUTUANTE -->
     <div id="editControlPanel" class="edit-control-panel">
         <span>Admin Dashboard</span>
-        <button class="btn-ghost" style="border-radius: var(--radius-full); padding: 10px 22px; font-weight: 800;" onclick="openPortfolioManager()">Portfolio</button>
-        <button class="btn-ghost" style="border-radius: var(--radius-full); padding: 10px 22px; font-weight: 800;" onclick="openPricesManager()">Pricing</button>
-        <button class="btn-primary" style="border-radius: var(--radius-full); padding: 10px 30px;" onclick="toggleEditMode()">Save Session</button>
+        <button class="btn-ghost" onclick="openPortfolioManager()">Portfolio</button>
+        <button class="btn-ghost" onclick="openPricesManager()">Pricing</button>
+        <button class="btn-primary" onclick="toggleEditMode()">Save Changes</button>
     </div>
 
     <script type="module">
@@ -361,75 +333,38 @@
         const SUPABASE_KEY = 'sb_publishable_oteHwr_i_hGi8SFBDzZCmA_K5z7hjG5'
         const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 
-        window.isEditModeActive = false;
-        window.meusModelos = [];
-        window.meusPrecos = [
-            { id: 1, valor: "$25 - $100", titulo: "Base Model", descricao: "Basic animations included: Blink, Breathing, Hair, Wings. Expressions: Angry, Sad, Happy, Confused. Textures: 128x128 or 256x256." },
-            { id: 2, valor: "$25 - $60", titulo: "Basic Animations", descricao: "For basic animations, like: walking, jumping, running, falling, etc... (Price may increase with complexity)" },
-            { id: 3, valor: "$5 - $25", titulo: "Custom Gestures", descricao: "For each simple custom gesture (like poses, short scenes, emotions, etc...)" },
-            { id: 4, valor: "$3 - $15", titulo: "Add-ons", descricao: "Alt small accessories (like other types of horns, belt, necklaces, masks, etc.). Alt costumes (fully other outfit)." }
+        // Novos Dados Padrão (Obrigatórios para o novo design)
+        const DEFAULT_PRICES = [
+            { id: 1, valor: "$25 - $100", titulo: "Base Model", descricao: "<ul><li>Basic animations included: Blink, Breathing, Hair, Wings.</li><li>Expressions: Angry, Sad, Happy, Confused.</li><li>Textures: 128x128 or 256x256.</li></ul>" },
+            { id: 2, valor: "$25 - $60", titulo: "Basic Animations", descricao: "<ul><li>Walking, jumping, running, falling.</li><li>Price may increase with complexity.</li></ul>" },
+            { id: 3, valor: "$5 - $25", titulo: "Custom Gestures", descricao: "<ul><li>Poses, short scenes, specific emotions.</li></ul>" },
+            { id: 4, valor: "$3 - $15", titulo: "Add-ons", descricao: "<ul><li>Accessories (horns, belt, necklaces, masks).</li><li>Alternative costumes.</li></ul>" }
         ];
+
+        window.meusModelos = [];
+        window.meusPrecos = [...DEFAULT_PRICES];
 
         window.showView = (name) => {
             const views = document.querySelectorAll('.view');
             const btns = document.querySelectorAll('nav button');
-            
-            // Fade out current
-            views.forEach(v => {
-                if(v.classList.contains('active')) {
-                    v.style.opacity = '0';
-                    v.style.transform = 'scale(0.98)';
-                }
-            });
-
-            setTimeout(() => {
-                views.forEach(v => v.classList.remove('active'));
-                btns.forEach(b => b.classList.remove('active'));
-                
-                const target = document.getElementById('view-'+name);
-                target.classList.add('active');
-                document.getElementById('btn-'+name).classList.add('active');
-            }, 100);
-        }
-
-        window.mudarMidia = (id, tipo, url, btn) => {
-            const area = document.getElementById(`media-${id}`);
-            area.style.opacity = '0.5';
-            
-            setTimeout(() => {
-                if(tipo === '3d') area.innerHTML = `<model-viewer src="${url}" auto-rotate camera-controls autoplay shadow-intensity="1"></model-viewer>`;
-                else if(tipo === 'img') area.innerHTML = `<img src="${url}">`;
-                else area.innerHTML = `<iframe src="${url}" allowfullscreen></iframe>`;
-                
-                area.style.opacity = '1';
-                btn.parentElement.querySelectorAll('.item-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-            }, 200);
+            views.forEach(v => v.classList.remove('active'));
+            btns.forEach(b => b.classList.remove('active'));
+            document.getElementById('view-'+name).classList.add('active');
+            document.getElementById('btn-'+name).classList.add('active');
         }
 
         window.carregarPortfolio = () => {
             const container = document.getElementById('portfolio-container');
-            if(window.meusModelos.length === 0) { container.innerHTML = "<p style='grid-column:1/-1;text-align:center;color:var(--text-dim)'>Curating items for display...</p>"; return; }
-            container.innerHTML = window.meusModelos.map(m => {
-                const p = m.itens[0];
-                let mediaHtml = p ? (p.tipo === '3d' ? `<model-viewer src="${p.arquivo}" auto-rotate camera-controls autoplay shadow-intensity="1"></model-viewer>` : p.tipo === 'img' ? `<img src="${p.arquivo}">` : `<iframe src="${p.arquivo}"></iframe>`) : "";
-                return `
+            container.innerHTML = window.meusModelos.map(m => `
                 <div class="model-card">
-                    <div class="preview-area" id="media-${m.id}">${mediaHtml}</div>
+                    <div class="preview-area" id="media-${m.id}">
+                        ${m.itens[0]?.tipo === '3d' ? `<model-viewer src="${m.itens[0].arquivo}" auto-rotate camera-controls shadow-intensity="1"></model-viewer>` : `<img src="${m.itens[0].arquivo}">`}
+                    </div>
                     <div class="model-info">
                         <h3>${m.titulo}</h3>
-                        <p style="font-size:0.95rem; color:var(--text-dim); line-height:1.6;">${m.descricao}</p>
-                        <div class="itens-container">
-                            ${m.itens.map((it, idx) => `
-                                <div class="item-btn ${idx===0?'active':''}" 
-                                     style="${it.icone?`background-image:url('${it.icone}')`:''}" 
-                                     onclick="mudarMidia(${m.id}, '${it.tipo}', '${it.arquivo}', this)">
-                                     ${it.icone?'':it.tipo.toUpperCase()}
-                                </div>`).join('')}
-                        </div>
+                        <p>${m.descricao}</p>
                     </div>
-                </div>`;
-            }).join('');
+                </div>`).join('');
         }
 
         window.carregarPrecos = () => {
@@ -437,24 +372,31 @@
             container.innerHTML = window.meusPrecos.map(p => `
                 <div class="card">
                     <span class="price-tag">${p.valor}</span>
-                    <h2 style="font-size: 1.7rem; margin-bottom:15px; font-weight: 800; color: #fff;">${p.titulo}</h2>
-                    <div style="line-height: 1.7; color: var(--text-dim); font-size: 1rem;">${p.descricao}</div>
+                    <h2>${p.titulo}</h2>
+                    <div class="card-desc">${p.descricao}</div>
                 </div>`).join('');
         }
 
         async function loadData() {
             const { data } = await supabase.from('site_content').select('*');
-            if(data) data.forEach(r => {
-                if(r.element_id === 'portfolio_data') window.meusModelos = JSON.parse(r.content);
-                else if(r.element_id === 'prices_data') window.meusPrecos = JSON.parse(r.content);
-                else { 
-                    const el = document.getElementById(r.element_id); 
-                    if(el) {
+            if(data) {
+                data.forEach(r => {
+                    const el = document.getElementById(r.element_id);
+                    if(r.element_id === 'portfolio_data') window.meusModelos = JSON.parse(r.content);
+                    else if(r.element_id === 'prices_data') {
+                        // Força a atualização se os dados salvos não tiverem a estrutura de lista <ul>
+                        const saved = JSON.parse(r.content);
+                        if(saved[0] && !saved[0].descricao.includes('<ul>')) {
+                            console.log("Detectado formato antigo, forçando atualização...");
+                        } else {
+                            window.meusPrecos = saved;
+                        }
+                    } else if(el) {
                         if(el.tagName === 'IMG') el.src = r.content;
                         else el.innerHTML = r.content;
                     }
-                }
-            });
+                });
+            }
             window.carregarPortfolio();
             window.carregarPrecos();
         }
@@ -478,107 +420,42 @@
             } else {
                 panel.classList.remove('active');
                 editables.forEach(el => { el.classList.remove('editing'); el.contentEditable = false; });
-                for(const el of editables) if(el.id) await supabase.from('site_content').upsert({ element_id: el.id, content: el.innerHTML });
+                // Salvar todos os campos editáveis e os arrays de dados
+                for(const el of editables) await supabase.from('site_content').upsert({ element_id: el.id, content: el.innerHTML });
+                await supabase.from('site_content').upsert({ element_id: 'prices_data', content: JSON.stringify(window.meusPrecos) });
             }
         }
 
-        // --- PORTFOLIO MANAGER ---
-        window.openPortfolioManager = () => {
-            document.getElementById('pm-list-container').innerHTML = window.meusModelos.map(m => `
-                <div class="item-row">
-                    <span style="font-weight:800; color:var(--accent-color)">${m.titulo}</span>
-                    <div style="display:flex; gap:10px;">
-                        <button class="btn-ghost" style="padding: 8px 18px; font-size: 0.75rem;" onclick="openPortfolioEditor(${m.id})">EDIT</button>
-                        <button class="btn-danger" style="padding: 8px 18px; font-size: 0.75rem;" onclick="deleteModel(${m.id})">REMOVE</button>
-                    </div>
-                </div>`).join('');
-            document.getElementById('portfolioListModal').classList.add('active');
-        }
-
-        window.openPortfolioEditor = (id) => {
-            const mod = id ? window.meusModelos.find(m => m.id === id) : null;
-            document.getElementById('pm-id').value = id || "new";
-            document.getElementById('pm-titulo').value = mod ? mod.titulo : "";
-            document.getElementById('pm-descricao').value = mod ? mod.descricao : "";
-            document.getElementById('pm-medias-container').innerHTML = '';
-            if(mod) mod.itens.forEach(i => addMediaRow(i.tipo, i.arquivo, i.icone));
-            else addMediaRow();
-            document.getElementById('portfolioEditorModal').classList.add('active');
-        }
-
-        window.addMediaRow = (tipo='3d', url='', ico='') => {
-            const div = document.createElement('div');
-            div.className = 'media-item-row';
-            div.innerHTML = `
-                <div class="input-group" style="margin:0"><label>Type</label><select class="media-tipo"><option value="3d" ${tipo==='3d'?'selected':''}>3D Model</option><option value="img" ${tipo==='img'?'selected':''}>Image</option><option value="video" ${tipo==='video'?'selected':''}>Video/Embed</option></select></div>
-                <div class="input-group" style="margin:0"><label>File URL</label><input type="text" class="media-url" placeholder="https://..." value="${url}"></div>
-                <div class="input-group" style="margin:0"><label>Thumbnail URL</label><input type="text" class="media-icon" placeholder="Optional" value="${ico}"></div>
-                <button class="btn-danger" style="height: 52px; width: 52px; border-radius: 14px;" onclick="this.parentElement.remove()">X</button>`;
-            document.getElementById('pm-medias-container').appendChild(div);
-        }
-
-        window.saveModelData = async () => {
-            const idVal = document.getElementById('pm-id').value;
-            const itens = Array.from(document.querySelectorAll('.media-item-row')).map(row => ({
-                tipo: row.querySelector('.media-tipo').value, arquivo: row.querySelector('.media-url').value, icone: row.querySelector('.media-icon').value
-            })).filter(i => i.arquivo);
-            const data = { id: idVal === "new" ? Date.now() : parseInt(idVal), titulo: document.getElementById('pm-titulo').value, descricao: document.getElementById('pm-descricao').value, itens };
-            if(idVal === "new") window.meusModelos.push(data);
-            else window.meusModelos[window.meusModelos.findIndex(m => m.id === data.id)] = data;
-            await supabase.from('site_content').upsert({ element_id: 'portfolio_data', content: JSON.stringify(window.meusModelos) });
-            document.getElementById('portfolioEditorModal').classList.remove('active');
-            openPortfolioManager(); carregarPortfolio();
-        }
-
-        window.deleteModel = async (id) => {
-            if(!confirm("Are you sure?")) return;
-            window.meusModelos = window.meusModelos.filter(m => m.id !== id);
-            await supabase.from('site_content').upsert({ element_id: 'portfolio_data', content: JSON.stringify(window.meusModelos) });
-            openPortfolioManager(); carregarPortfolio();
-        }
-
-        // --- PRICES MANAGER ---
         window.openPricesManager = () => {
             document.getElementById('price-list-container').innerHTML = window.meusPrecos.map(p => `
-                <div class="item-row">
-                    <span style="font-weight:800; color:var(--accent-color)">${p.titulo}</span>
-                    <div style="display:flex; gap:10px;">
-                        <button class="btn-ghost" style="padding: 8px 18px; font-size: 0.75rem;" onclick="openPriceEditor(${p.id})">EDIT</button>
-                        <button class="btn-danger" style="padding: 8px 18px; font-size: 0.75rem;" onclick="deletePrice(${p.id})">REMOVE</button>
-                    </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px; padding:15px; background:rgba(0,0,0,0.2); border-radius:10px;">
+                    <span>${p.titulo}</span>
+                    <button class="btn-ghost" onclick="openPriceEditor(${p.id})">EDIT</button>
                 </div>`).join('');
             document.getElementById('pricesListModal').classList.add('active');
         }
 
         window.openPriceEditor = (id) => {
-            const p = id ? window.meusPrecos.find(x => x.id === id) : null;
-            document.getElementById('pr-id').value = id || "new";
-            document.getElementById('pr-valor').value = p ? p.valor : "";
-            document.getElementById('pr-titulo').value = p ? p.titulo : "";
-            document.getElementById('pr-descricao').value = p ? p.descricao : "";
+            const p = window.meusPrecos.find(x => x.id === id);
+            document.getElementById('pr-id').value = id;
+            document.getElementById('pr-valor').value = p.valor;
+            document.getElementById('pr-titulo').value = p.titulo;
+            document.getElementById('pr-descricao').value = p.descricao;
             document.getElementById('priceEditorModal').classList.add('active');
         }
 
-        window.savePriceData = async () => {
-            const idVal = document.getElementById('pr-id').value;
-            const data = { 
-                id: idVal === "new" ? Date.now() : parseInt(idVal), 
+        window.savePriceData = () => {
+            const id = parseInt(document.getElementById('pr-id').value);
+            const idx = window.meusPrecos.findIndex(x => x.id === id);
+            window.meusPrecos[idx] = {
+                id: id,
                 valor: document.getElementById('pr-valor').value,
                 titulo: document.getElementById('pr-titulo').value,
                 descricao: document.getElementById('pr-descricao').value
             };
-            if(idVal === "new") window.meusPrecos.push(data);
-            else window.meusPrecos[window.meusPrecos.findIndex(x => x.id === data.id)] = data;
-            await supabase.from('site_content').upsert({ element_id: 'prices_data', content: JSON.stringify(window.meusPrecos) });
             document.getElementById('priceEditorModal').classList.remove('active');
-            openPricesManager(); carregarPrecos();
-        }
-
-        window.deletePrice = async (id) => {
-            if(!confirm("Delete this tier?")) return;
-            window.meusPrecos = window.meusPrecos.filter(x => x.id !== id);
-            await supabase.from('site_content').upsert({ element_id: 'prices_data', content: JSON.stringify(window.meusPrecos) });
-            openPricesManager(); carregarPrecos();
+            window.carregarPrecos();
+            openPricesManager();
         }
 
         window.addEventListener('load', loadData);
