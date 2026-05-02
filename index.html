@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arara de Cartola | Commissions</title>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+    
+    <style>
+        :root {
+            --bg-color: #1a1614; 
+            --card-bg: #2a2420;
+            --accent-color: #a68966;
+            --text-main: #d9d0c7;
+            --text-dim: #8c7e74;
+            --border-color: #3d352e;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px 20px 20px;
+        }
+
+        .logo-container {
+            width: 120px;
+            height: 120px;
+            background: var(--card-bg);
+            border: 2px solid var(--accent-color);
+            border-radius: 50%;
+            margin: 0 auto 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .brand-name {
+            font-size: 2rem;
+            color: var(--accent-color);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            padding: 20px;
+            background: rgba(26, 22, 20, 0.95);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        nav button {
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: 0.3s;
+        }
+
+        nav button.active {
+            color: var(--accent-color);
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto 40px auto;
+            padding: 20px;
+        }
+
+        .view { display: none; }
+        .view.active { display: block; animation: fadeIn 0.5s ease; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .price-grid { display: grid; gap: 20px; }
+        .card {
+            background: var(--card-bg);
+            border-left: 4px solid var(--accent-color);
+            padding: 25px;
+            border-radius: 4px;
+        }
+        .price-tag { 
+            color: var(--accent-color); 
+            font-weight: bold; 
+            font-size: 1.2rem;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        h2 { margin: 0 0 10px 0; font-size: 1.4rem; }
+        ul { padding-left: 20px; color: var(--text-dim); }
+        li { margin-bottom: 5px; }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .model-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ESTILO DO VISUALIZADOR 3D */
+        model-viewer {
+            width: 100%;
+            height: 300px;
+            background-color: #120f0e;
+            --poster-color: transparent;
+        }
+
+        .model-info { padding: 15px; }
+
+        footer { text-align: center; padding: 40px; color: var(--text-dim); font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-container">
+            <img src="fuuurgh.png" alt="Arara de Cartola Logo">
+        </div>
+        <h1 class="brand-name">Arara de Cartola</h1>
+        <p style="color: var(--text-dim);">Minecraft Skin & Model Commissions</p>
+    </header>
+
+    <nav>
+        <button onclick="showView('prices')" id="btn-prices" class="active">Prices</button>
+        <button onclick="showView('portfolio')" id="btn-portfolio">Portfolio</button>
+    </nav>
+
+    <div class="container">
+        
+        <section id="view-prices" class="view active">
+            <div class="price-grid">
+                <div class="card">
+                    <span class="price-tag">$25 - $100</span>
+                    <h2>Base Model</h2>
+                    <ul>
+                        <li>Basic animations included: Blink, Breathing, Hair, Wings.</li>
+                        <li>Expressions: Angry, Sad, Happy, Confused.</li>
+                        <li>Textures: 128x128 or 256x256 (higher cost).</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <span class="price-tag">$25 - $60</span>
+                    <h2>Basic Animations</h2>
+                    <p>Movement cycles: Walking, jumping, running, falling, etc.</p>
+                </div>
+                <div class="card">
+                    <span class="price-tag">$5 - $25</span>
+                    <h2>Custom Gestures</h2>
+                    <p>Simple or Complex choreographs, transformations and scenes.</p>
+                </div>
+                <div class="card">
+                    <span class="price-tag">$3 - $15</span>
+                    <h2>Add-ons</h2>
+                    <p>Accessories ($3) and Alt Costumes ($15).</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-portfolio" class="view">
+            <h1 style="text-align: center; color: var(--accent-color);">Model Showcase</h1>
+            <div class="portfolio-grid" id="portfolio-container"></div>
+        </section>
+
+    </div>
+
+    <footer>
+        <div style="margin-bottom: 10px;">Commission Status: 🟢 OPEN</div>
+        <p>© 2026 Arara de Cartola • All rights reserved.</p>
+    </footer>
+
+    <script>
+        function showView(viewName) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+            document.getElementById('view-' + viewName).classList.add('active');
+            document.getElementById('btn-' + viewName).classList.add('active');
+        }
+
+        // 1. LISTA DE MODELOS (Adicione os nomes dos arquivos .glb aqui!)
+        const meusModelos = [
+            {
+                titulo: "Modelo 1",
+                descricao: "Descrição do modelo",
+                arquivoGLB: "REapercommteste.gltf" // Coloque o nome do arquivo que você exportou do Blockbench
+            },
+            {
+                titulo: "Modelo 2",
+                descricao: "Descrição do modelo",
+                arquivoGLB: "modelo2.glb"
+            },
+            {
+                titulo: "Modelo 3",
+                descricao: "Descrição do modelo",
+                arquivoGLB: "modelo3.glb"
+            }
+        ];
+
+        // 2. FUNÇÃO PARA GERAR O PORTFÓLIO 3D NA TELA
+        function carregarPortfolio() {
+            const container = document.getElementById('portfolio-container');
+            
+            container.innerHTML = meusModelos.map(modelo => `
+                <div class="model-card">
+                    <model-viewer 
+                        src="${modelo.arquivoGLB}" 
+                        alt="${modelo.titulo}"
+                        auto-rotate 
+                        camera-controls 
+                        shadow-intensity="1"
+                        autoplay
+                        interaction-prompt="auto">
+                    </model-viewer>
+                    <div class="model-info">
+                        <h3>${modelo.titulo}</h3>
+                        <p style="font-size: 0.9rem; color: var(--text-dim);">${modelo.descricao}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        carregarPortfolio();
+    </script>
+</body>
+</html>
