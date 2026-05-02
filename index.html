@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arara de Cartola | Commissions</title>
+    
+    <!-- Model Viewer -->
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     
     <style>
@@ -11,148 +13,236 @@
             --bg-color: #1a1614; 
             --card-bg: #2a2420;
             --accent-color: #a68966;
+            --accent-hover: #c4a47c;
             --text-main: #d9d0c7;
             --text-dim: #8c7e74;
             --border-color: #3d352e;
+            --radius-full: 50px;
+            --radius-md: 20px;
+            --radius-sm: 8px;
+            --shadow: 0 15px 35px rgba(0,0,0,0.4);
         }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-main);
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             margin: 0;
             overflow-x: hidden;
+            line-height: 1.6;
         }
 
-        header {
-            text-align: center;
-            padding: 40px 20px 20px 20px;
-        }
+        header { text-align: center; padding: 80px 20px 40px 20px; }
 
         .logo-container {
-            width: 120px;
-            height: 120px;
+            width: 140px; height: 140px;
             background: var(--card-bg);
             border: 2px solid var(--accent-color);
             border-radius: 50%;
-            margin: 0 auto 20px auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            margin: 0 auto 30px auto;
+            display: flex; align-items: center; justify-content: center;
             overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-
-        .logo-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .logo-container:hover { transform: scale(1.05) rotate(5deg); }
+        .logo-container img { width: 100%; height: 100%; object-fit: cover; }
 
         .brand-name {
-            font-size: 2rem;
-            color: var(--accent-color);
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            margin: 0;
+            font-size: 2.5rem; color: var(--accent-color);
+            letter-spacing: 6px; text-transform: uppercase; margin: 0;
+            font-weight: 900;
         }
 
         nav {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            padding: 20px;
+            display: flex; justify-content: center; gap: 15px; padding: 20px;
             background: rgba(26, 22, 20, 0.95);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            backdrop-filter: blur(15px);
+            position: sticky; top: 0; z-index: 100;
             border-bottom: 1px solid var(--border-color);
         }
 
         nav button {
-            background: none;
-            border: none;
-            color: var(--text-dim);
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            transition: 0.3s;
+            background: none; border: none; color: var(--text-dim);
+            font-size: 0.9rem; font-weight: 800; cursor: pointer;
+            text-transform: uppercase; letter-spacing: 2px; transition: 0.3s;
+            padding: 12px 24px;
+            border-radius: var(--radius-full);
         }
 
-        nav button.active {
-            color: var(--accent-color);
-            border-bottom: 2px solid var(--accent-color);
+        nav button.active { color: var(--accent-color); background: rgba(166, 137, 102, 0.15); }
+        nav button:hover:not(.active) { color: var(--text-main); }
+
+        .container { max-width: 1100px; margin: 40px auto 100px auto; padding: 0 25px; }
+
+        .view { display: none; opacity: 0; transform: scale(0.98); transition: all 0.5s ease; }
+        .view.active { 
+            display: block; 
+            opacity: 1; 
+            transform: scale(1); 
+            animation: smoothFadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards; 
         }
 
-        .container {
-            max-width: 900px;
-            margin: 20px auto 40px auto;
-            padding: 20px;
+        @keyframes smoothFadeIn { 
+            from { opacity: 0; transform: scale(0.98) translateY(10px); } 
+            to { opacity: 1; transform: scale(1) translateY(0); } 
         }
 
-        .view { display: none; }
-        .view.active { display: block; animation: fadeIn 0.5s ease; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .price-grid { display: grid; gap: 20px; }
-        .card {
-            background: var(--card-bg);
-            border-left: 4px solid var(--accent-color);
-            padding: 25px;
-            border-radius: 4px;
-        }
-        .price-tag { 
-            color: var(--accent-color); 
-            font-weight: bold; 
-            font-size: 1.2rem;
-            display: block;
-            margin-bottom: 5px;
+        /* Melhoria no grid de preços */
+        .price-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 35px; /* Aumentado para não ficarem grudados */
+            padding: 20px 0;
         }
         
-        h2 { margin: 0 0 10px 0; font-size: 1.4rem; }
-        ul { padding-left: 20px; color: var(--text-dim); }
-        li { margin-bottom: 5px; }
-
-        .portfolio-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-        .model-card {
-            background: var(--card-bg);
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
+        .card {
+            background: var(--card-bg); 
+            border-top: 4px solid var(--accent-color);
+            padding: 35px; 
+            border-radius: var(--radius-md);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
             display: flex;
             flex-direction: column;
+            height: 100%;
+            box-sizing: border-box;
+        }
+        .card:hover { 
+            transform: translateY(-10px); 
+            box-shadow: var(--shadow);
+            border-top-width: 8px;
         }
 
-        /* ESTILO DO VISUALIZADOR 3D */
-        model-viewer {
-            width: 100%;
-            height: 300px;
-            background-color: #120f0e;
-            --poster-color: transparent;
+        .price-tag { 
+            color: var(--accent-color); 
+            font-weight: 900; 
+            font-size: 1.4rem; 
+            display: block; 
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+        
+        .portfolio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 40px; }
+        
+        .model-card {
+            background: var(--card-bg); border-radius: var(--radius-md); overflow: hidden;
+            border: 1px solid var(--border-color); display: flex; flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            transition: 0.3s ease;
+        }
+        .model-card:hover { border-color: var(--accent-color); }
+
+        .preview-area { width: 100%; height: 400px; background-color: #120f0e; overflow: hidden; position: relative; }
+        .preview-area model-viewer, .preview-area img, .preview-area iframe {
+            width: 100%; height: 100%; border: none; object-fit: contain;
         }
 
-        .model-info { padding: 15px; }
+        .model-info { padding: 30px; }
+        .model-info h3 { margin: 0 0 12px 0; font-size: 1.6rem; color: var(--accent-color); font-weight: 800; }
 
-        footer { text-align: center; padding: 40px; color: var(--text-dim); font-size: 0.9rem; }
+        .itens-container {
+            display: flex; gap: 14px; margin-top: 25px; flex-wrap: wrap;
+        }
+
+        .item-btn {
+            width: 52px; height: 52px; border-radius: 14px; 
+            border: 2px solid var(--border-color); cursor: pointer;
+            background-color: var(--bg-color);
+            background-size: cover; background-position: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            color: var(--text-dim); display: grid; place-items: center; font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .item-btn:hover { border-color: var(--accent-color); transform: translateY(-3px); }
+        .item-btn.active { border-color: var(--accent-color); background-color: rgba(166, 137, 102, 0.2); color: var(--accent-color); box-shadow: 0 0 15px rgba(166, 137, 102, 0.3); }
+
+        footer { text-align: center; padding: 100px 40px; color: var(--text-dim); font-size: 0.9rem; }
+
+        .btn-admin {
+            background: transparent; border: 1px solid var(--border-color); color: var(--text-dim);
+            padding: 12px 30px; border-radius: var(--radius-full); cursor: pointer; transition: 0.3s; margin-top: 30px;
+            font-weight: 700; font-size: 0.85rem; letter-spacing: 1px;
+        }
+        .btn-admin:hover { border-color: var(--accent-color); color: var(--accent-color); background: rgba(166, 137, 102, 0.05); }
+
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center;
+            z-index: 9999; opacity: 0; pointer-events: none; transition: 0.4s;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        
+        .modal-box {
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            padding: 45px; border-radius: 30px; width: 90%; max-width: 480px; max-height: 90vh; 
+            overflow-y: auto; box-shadow: var(--shadow);
+        }
+        .modal-box.large { max-width: 950px; }
+        .modal-box h3 { margin-top: 0; font-size: 1.8rem; color: var(--accent-color); margin-bottom: 30px; }
+        
+        .input-group { margin-bottom: 25px; }
+        .input-group label { display: block; font-size: 0.9rem; color: var(--text-dim); margin-bottom: 10px; font-weight: 700; }
+        .input-group input, .input-group textarea, .input-group select {
+            width: 100%; padding: 16px 20px; border-radius: 16px;
+            border: 2px solid var(--border-color); background: var(--bg-color);
+            color: var(--text-main); font-family: inherit; outline: none; box-sizing: border-box;
+            transition: all 0.3s;
+        }
+        .input-group input:focus { border-color: var(--accent-color); background: rgba(0,0,0,0.2); }
+        
+        .modal-actions { display: flex; gap: 15px; margin-top: 35px; }
+        .modal-actions button { 
+            flex: 1; padding: 16px; cursor: pointer; border-radius: var(--radius-full); 
+            border: none; font-weight: 800; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .btn-primary { background: var(--accent-color); color: var(--bg-color); }
+        .btn-primary:hover { background: var(--accent-hover); transform: translateY(-3px); box-shadow: 0 5px 15px rgba(166, 137, 102, 0.4); }
+        .btn-danger { background: #4a1c1c; color: #ff9e9e; }
+        .btn-ghost { background: transparent; color: var(--text-dim); border: 2px solid var(--border-color); }
+
+        .edit-control-panel {
+            position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(150px);
+            background: var(--card-bg); border: 2px solid var(--accent-color);
+            padding: 15px 15px 15px 30px; border-radius: var(--radius-full); display: flex; align-items: center; gap: 20px;
+            z-index: 1000; transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: var(--shadow);
+        }
+        .edit-control-panel.active { transform: translateX(-50%) translateY(0); }
+        .edit-control-panel span { font-weight: 900; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 2px; color: var(--accent-color); }
+
+        .editable.editing { outline: 2px dashed var(--accent-color); outline-offset: 4px; cursor: text; border-radius: 4px; }
+
+        .item-row { 
+            display: flex; justify-content: space-between; padding: 20px 25px; 
+            border-bottom: 1px solid var(--border-color); align-items: center;
+            background: rgba(255,255,255,0.03); margin-bottom: 12px; border-radius: 16px;
+        }
+        
+        .media-item-row { 
+            display: grid; grid-template-columns: 1fr 2fr 1fr auto; gap: 15px; 
+            margin-bottom: 20px; align-items: end; background: rgba(0,0,0,0.4); 
+            padding: 25px; border-radius: 20px; border: 1px solid var(--border-color);
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .brand-name { font-size: 1.8rem; letter-spacing: 4px; }
+            .price-grid { gap: 20px; }
+            .media-item-row { grid-template-columns: 1fr; gap: 10px; }
+            .edit-control-panel { flex-direction: column; border-radius: 20px; padding: 20px; width: 80%; transform: translateX(-50%) translateY(300px); }
+        }
     </style>
 </head>
 <body>
 
     <header>
         <div class="logo-container">
-            <img src="fuuurgh.png" alt="Arara de Cartola Logo">
+            <img id="main-logo" src="https://via.placeholder.com/140/2a2420/a68966?text=Arara" alt="Logo">
         </div>
-        <h1 class="brand-name">Arara de Cartola</h1>
-        <p style="color: var(--text-dim);">Minecraft Skin & Model Commissions</p>
+        <h1 class="brand-name editable" id="text-brand">Arara de Cartola</h1>
+        <p class="editable" id="text-subtitle" style="color: var(--text-dim); font-weight: 600; margin-top: 15px; font-size: 1.1rem; letter-spacing: 1px;">Minecraft Skin & Model Commissions</p>
     </header>
 
     <nav>
@@ -161,99 +251,337 @@
     </nav>
 
     <div class="container">
-        
         <section id="view-prices" class="view active">
-            <div class="price-grid">
-                <div class="card">
-                    <span class="price-tag">$25 - $100</span>
-                    <h2>Base Model</h2>
-                    <ul>
-                        <li>Basic animations included: Blink, Breathing, Hair, Wings.</li>
-                        <li>Expressions: Angry, Sad, Happy, Confused.</li>
-                        <li>Textures: 128x128 or 256x256 (higher cost).</li>
-                    </ul>
-                </div>
-                <div class="card">
-                    <span class="price-tag">$25 - $60</span>
-                    <h2>Basic Animations</h2>
-                    <p>Movement cycles: Walking, jumping, running, falling, etc.</p>
-                </div>
-                <div class="card">
-                    <span class="price-tag">$5 - $25</span>
-                    <h2>Custom Gestures</h2>
-                    <p>Simple or Complex choreographs, transformations and scenes.</p>
-                </div>
-                <div class="card">
-                    <span class="price-tag">$3 - $15</span>
-                    <h2>Add-ons</h2>
-                    <p>Accessories ($3) and Alt Costumes ($15).</p>
-                </div>
+            <div class="price-grid" id="prices-container">
+                <!-- Carregado via JS -->
             </div>
         </section>
 
         <section id="view-portfolio" class="view">
-            <h1 style="text-align: center; color: var(--accent-color);">Model Showcase</h1>
+            <h2 class="editable" id="text-port-title" style="text-align: center; color: var(--accent-color); margin-bottom: 50px; font-size: 2rem; font-weight: 900; text-transform: uppercase; letter-spacing: 3px;">Model Showcase</h2>
             <div class="portfolio-grid" id="portfolio-container"></div>
         </section>
-
     </div>
 
     <footer>
-        <div style="margin-bottom: 10px;">Commission Status: 🟢 OPEN</div>
-        <p>© 2026 Arara de Cartola • All rights reserved.</p>
+        <div class="editable" id="text-status" style="font-weight: 800; font-size: 1.2rem; margin-bottom: 15px; letter-spacing: 1px;">Commission Status: <span style="color:#4ecb71">🟢 OPEN</span></div>
+        <p class="editable" id="text-footer">© 2026 Arara de Cartola • High Quality Assets</p>
+        <button class="btn-admin" onclick="openLoginModal()">Staff Portal</button>
     </footer>
 
-    <script>
-        function showView(viewName) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-            document.getElementById('view-' + viewName).classList.add('active');
-            document.getElementById('btn-' + viewName).classList.add('active');
-        }
+    <!-- MODAIS ADMIN -->
+    <div id="loginModal" class="modal-overlay">
+        <div class="modal-box">
+            <h3>Admin Login</h3>
+            <div class="input-group">
+                <label>Access Key</label>
+                <input type="text" id="usernameInput" placeholder="Username">
+            </div>
+            <div class="input-group">
+                <label>Secret</label>
+                <input type="password" id="passwordInput" placeholder="••••••••">
+            </div>
+            <div class="modal-actions">
+                <button class="btn-ghost" onclick="closeModals()">Back</button>
+                <button class="btn-primary" onclick="verifyLogin()">Authorize</button>
+            </div>
+        </div>
+    </div>
 
-        // 1. LISTA DE MODELOS (Adicione os nomes dos arquivos .glb aqui!)
-        const meusModelos = [
-            {
-                titulo: "Modelo 1",
-                descricao: "Descrição do modelo",
-                arquivoGLB: "REapercommteste.gltf" // Coloque o nome do arquivo que você exportou do Blockbench
-            },
-            {
-                titulo: "Modelo 2",
-                descricao: "Descrição do modelo",
-                arquivoGLB: "modelo2.glb"
-            },
-            {
-                titulo: "Modelo 3",
-                descricao: "Descrição do modelo",
-                arquivoGLB: "modelo3.glb"
-            }
+    <div id="portfolioListModal" class="modal-overlay">
+        <div class="modal-box large">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                <h3 style="margin:0">Portfolio Management</h3>
+                <button class="btn-primary" style="padding: 10px 25px; font-size: 0.8rem;" onclick="openPortfolioEditor(null)">+ Add New Model</button>
+            </div>
+            <div id="pm-list-container"></div>
+            <div class="modal-actions">
+                <button class="btn-ghost" onclick="closeModals()">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="portfolioEditorModal" class="modal-overlay" style="z-index:10001">
+        <div class="modal-box large">
+            <h3>Item Editor</h3>
+            <input type="hidden" id="pm-id">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="input-group"><label>Model Title</label><input type="text" id="pm-titulo"></div>
+                <div class="input-group"><label>Description</label><input type="text" id="pm-descricao"></div>
+            </div>
+            <label style="font-size: 0.9rem; color: var(--text-dim); font-weight: 700; display: block; margin-bottom: 15px;">Media Rows (3D Models or Images)</label>
+            <div id="pm-medias-container"></div>
+            <button class="btn-ghost" style="width:100%; border-style: dashed; border-radius: 16px; padding: 15px;" onclick="addMediaRow()">+ Add Media Layer</button>
+            <div class="modal-actions">
+                <button class="btn-ghost" onclick="document.getElementById('portfolioEditorModal').classList.remove('active')">Discard</button>
+                <button class="btn-primary" onclick="saveModelData()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="pricesListModal" class="modal-overlay">
+        <div class="modal-box large">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                <h3 style="margin:0">Pricing Management</h3>
+                <button class="btn-primary" style="padding: 10px 25px; font-size: 0.8rem;" onclick="openPriceEditor(null)">+ New Price Tier</button>
+            </div>
+            <div id="price-list-container"></div>
+            <div class="modal-actions">
+                <button class="btn-ghost" onclick="closeModals()">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="priceEditorModal" class="modal-overlay" style="z-index:10001">
+        <div class="modal-box">
+            <h3>Price Tier Details</h3>
+            <input type="hidden" id="pr-id">
+            <div class="input-group"><label>Price Range</label><input type="text" id="pr-valor" placeholder="$00 - $00"></div>
+            <div class="input-group"><label>Service Title</label><input type="text" id="pr-titulo"></div>
+            <div class="input-group"><label>Service Details (Use HTML for breaks)</label><textarea id="pr-descricao" rows="5"></textarea></div>
+            <div class="modal-actions">
+                <button class="btn-ghost" onclick="document.getElementById('priceEditorModal').classList.remove('active')">Cancel</button>
+                <button class="btn-primary" onclick="savePriceData()">Update Tier</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAINEL DE CONTROLO FLUTUANTE -->
+    <div id="editControlPanel" class="edit-control-panel">
+        <span>Admin Dashboard</span>
+        <button class="btn-ghost" style="border-radius: var(--radius-full); padding: 10px 22px; font-weight: 800;" onclick="openPortfolioManager()">Portfolio</button>
+        <button class="btn-ghost" style="border-radius: var(--radius-full); padding: 10px 22px; font-weight: 800;" onclick="openPricesManager()">Pricing</button>
+        <button class="btn-primary" style="border-radius: var(--radius-full); padding: 10px 30px;" onclick="toggleEditMode()">Save Session</button>
+    </div>
+
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+        const SUPABASE_URL = 'https://xppatcemcomtfafrtpnb.supabase.co' 
+        const SUPABASE_KEY = 'sb_publishable_4z492YTqsiA8b4DlomwoBw_req0uhDf'
+        const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
+
+        window.isEditModeActive = false;
+        window.meusModelos = [];
+        window.meusPrecos = [
+            { id: 1, valor: "$25 - $100", titulo: "Base Model", descricao: "Basic animations included: Blink, Breathing, Hair, Wings. Expressions: Angry, Sad, Happy, Confused. Textures: 128x128 or 256x256." },
+            { id: 2, valor: "$25 - $60", titulo: "Basic Animations", descricao: "For basic animations, like: walking, jumping, running, falling, etc... (Price may increase with complexity)" },
+            { id: 3, valor: "$5 - $25", titulo: "Custom Gestures", descricao: "For each simple custom gesture (like poses, short scenes, emotions, etc...)" },
+            { id: 4, valor: "$3 - $15", titulo: "Add-ons", descricao: "Alt small accessories (like other types of horns, belt, necklaces, masks, etc.). Alt costumes (fully other outfit)." }
         ];
 
-        // 2. FUNÇÃO PARA GERAR O PORTFÓLIO 3D NA TELA
-        function carregarPortfolio() {
-            const container = document.getElementById('portfolio-container');
+        window.showView = (name) => {
+            const views = document.querySelectorAll('.view');
+            const btns = document.querySelectorAll('nav button');
             
-            container.innerHTML = meusModelos.map(modelo => `
-                <div class="model-card">
-                    <model-viewer 
-                        src="${modelo.arquivoGLB}" 
-                        alt="${modelo.titulo}"
-                        auto-rotate 
-                        camera-controls 
-                        shadow-intensity="1"
-                        autoplay
-                        interaction-prompt="auto">
-                    </model-viewer>
-                    <div class="model-info">
-                        <h3>${modelo.titulo}</h3>
-                        <p style="font-size: 0.9rem; color: var(--text-dim);">${modelo.descricao}</p>
-                    </div>
-                </div>
-            `).join('');
+            // Fade out current
+            views.forEach(v => {
+                if(v.classList.contains('active')) {
+                    v.style.opacity = '0';
+                    v.style.transform = 'scale(0.98)';
+                }
+            });
+
+            setTimeout(() => {
+                views.forEach(v => v.classList.remove('active'));
+                btns.forEach(b => b.classList.remove('active'));
+                
+                const target = document.getElementById('view-'+name);
+                target.classList.add('active');
+                document.getElementById('btn-'+name).classList.add('active');
+            }, 100);
         }
 
-        carregarPortfolio();
+        window.mudarMidia = (id, tipo, url, btn) => {
+            const area = document.getElementById(`media-${id}`);
+            area.style.opacity = '0.5';
+            
+            setTimeout(() => {
+                if(tipo === '3d') area.innerHTML = `<model-viewer src="${url}" auto-rotate camera-controls autoplay shadow-intensity="1"></model-viewer>`;
+                else if(tipo === 'img') area.innerHTML = `<img src="${url}">`;
+                else area.innerHTML = `<iframe src="${url}" allowfullscreen></iframe>`;
+                
+                area.style.opacity = '1';
+                btn.parentElement.querySelectorAll('.item-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            }, 200);
+        }
+
+        window.carregarPortfolio = () => {
+            const container = document.getElementById('portfolio-container');
+            if(window.meusModelos.length === 0) { container.innerHTML = "<p style='grid-column:1/-1;text-align:center;color:var(--text-dim)'>Curating items for display...</p>"; return; }
+            container.innerHTML = window.meusModelos.map(m => {
+                const p = m.itens[0];
+                let mediaHtml = p ? (p.tipo === '3d' ? `<model-viewer src="${p.arquivo}" auto-rotate camera-controls autoplay shadow-intensity="1"></model-viewer>` : p.tipo === 'img' ? `<img src="${p.arquivo}">` : `<iframe src="${p.arquivo}"></iframe>`) : "";
+                return `
+                <div class="model-card">
+                    <div class="preview-area" id="media-${m.id}">${mediaHtml}</div>
+                    <div class="model-info">
+                        <h3>${m.titulo}</h3>
+                        <p style="font-size:0.95rem; color:var(--text-dim); line-height:1.6;">${m.descricao}</p>
+                        <div class="itens-container">
+                            ${m.itens.map((it, idx) => `
+                                <div class="item-btn ${idx===0?'active':''}" 
+                                     style="${it.icone?`background-image:url('${it.icone}')`:''}" 
+                                     onclick="mudarMidia(${m.id}, '${it.tipo}', '${it.arquivo}', this)">
+                                     ${it.icone?'':it.tipo.toUpperCase()}
+                                </div>`).join('')}
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        window.carregarPrecos = () => {
+            const container = document.getElementById('prices-container');
+            container.innerHTML = window.meusPrecos.map(p => `
+                <div class="card">
+                    <span class="price-tag">${p.valor}</span>
+                    <h2 style="font-size: 1.7rem; margin-bottom:15px; font-weight: 800; color: #fff;">${p.titulo}</h2>
+                    <div style="line-height: 1.7; color: var(--text-dim); font-size: 1rem;">${p.descricao}</div>
+                </div>`).join('');
+        }
+
+        async function loadData() {
+            const { data } = await supabase.from('site_content').select('*');
+            if(data) data.forEach(r => {
+                if(r.element_id === 'portfolio_data') window.meusModelos = JSON.parse(r.content);
+                else if(r.element_id === 'prices_data') window.meusPrecos = JSON.parse(r.content);
+                else { 
+                    const el = document.getElementById(r.element_id); 
+                    if(el) {
+                        if(el.tagName === 'IMG') el.src = r.content;
+                        else el.innerHTML = r.content;
+                    }
+                }
+            });
+            window.carregarPortfolio();
+            window.carregarPrecos();
+        }
+
+        window.openLoginModal = () => document.getElementById('loginModal').classList.add('active');
+        window.closeModals = () => document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
+        
+        window.verifyLogin = () => {
+            if(document.getElementById('usernameInput').value === 'admin' && document.getElementById('passwordInput').value === 'admin123') {
+                closeModals(); toggleEditMode();
+            }
+        };
+
+        window.toggleEditMode = async () => {
+            window.isEditModeActive = !window.isEditModeActive;
+            const panel = document.getElementById('editControlPanel');
+            const editables = document.querySelectorAll('.editable');
+            if(window.isEditModeActive) {
+                panel.classList.add('active');
+                editables.forEach(el => { el.classList.add('editing'); el.contentEditable = true; });
+            } else {
+                panel.classList.remove('active');
+                editables.forEach(el => { el.classList.remove('editing'); el.contentEditable = false; });
+                for(const el of editables) if(el.id) await supabase.from('site_content').upsert({ element_id: el.id, content: el.innerHTML });
+            }
+        }
+
+        // --- PORTFOLIO MANAGER ---
+        window.openPortfolioManager = () => {
+            document.getElementById('pm-list-container').innerHTML = window.meusModelos.map(m => `
+                <div class="item-row">
+                    <span style="font-weight:800; color:var(--accent-color)">${m.titulo}</span>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn-ghost" style="padding: 8px 18px; font-size: 0.75rem;" onclick="openPortfolioEditor(${m.id})">EDIT</button>
+                        <button class="btn-danger" style="padding: 8px 18px; font-size: 0.75rem;" onclick="deleteModel(${m.id})">REMOVE</button>
+                    </div>
+                </div>`).join('');
+            document.getElementById('portfolioListModal').classList.add('active');
+        }
+
+        window.openPortfolioEditor = (id) => {
+            const mod = id ? window.meusModelos.find(m => m.id === id) : null;
+            document.getElementById('pm-id').value = id || "new";
+            document.getElementById('pm-titulo').value = mod ? mod.titulo : "";
+            document.getElementById('pm-descricao').value = mod ? mod.descricao : "";
+            document.getElementById('pm-medias-container').innerHTML = '';
+            if(mod) mod.itens.forEach(i => addMediaRow(i.tipo, i.arquivo, i.icone));
+            else addMediaRow();
+            document.getElementById('portfolioEditorModal').classList.add('active');
+        }
+
+        window.addMediaRow = (tipo='3d', url='', ico='') => {
+            const div = document.createElement('div');
+            div.className = 'media-item-row';
+            div.innerHTML = `
+                <div class="input-group" style="margin:0"><label>Type</label><select class="media-tipo"><option value="3d" ${tipo==='3d'?'selected':''}>3D Model</option><option value="img" ${tipo==='img'?'selected':''}>Image</option><option value="video" ${tipo==='video'?'selected':''}>Video/Embed</option></select></div>
+                <div class="input-group" style="margin:0"><label>File URL</label><input type="text" class="media-url" placeholder="https://..." value="${url}"></div>
+                <div class="input-group" style="margin:0"><label>Thumbnail URL</label><input type="text" class="media-icon" placeholder="Optional" value="${ico}"></div>
+                <button class="btn-danger" style="height: 52px; width: 52px; border-radius: 14px;" onclick="this.parentElement.remove()">X</button>`;
+            document.getElementById('pm-medias-container').appendChild(div);
+        }
+
+        window.saveModelData = async () => {
+            const idVal = document.getElementById('pm-id').value;
+            const itens = Array.from(document.querySelectorAll('.media-item-row')).map(row => ({
+                tipo: row.querySelector('.media-tipo').value, arquivo: row.querySelector('.media-url').value, icone: row.querySelector('.media-icon').value
+            })).filter(i => i.arquivo);
+            const data = { id: idVal === "new" ? Date.now() : parseInt(idVal), titulo: document.getElementById('pm-titulo').value, descricao: document.getElementById('pm-descricao').value, itens };
+            if(idVal === "new") window.meusModelos.push(data);
+            else window.meusModelos[window.meusModelos.findIndex(m => m.id === data.id)] = data;
+            await supabase.from('site_content').upsert({ element_id: 'portfolio_data', content: JSON.stringify(window.meusModelos) });
+            document.getElementById('portfolioEditorModal').classList.remove('active');
+            openPortfolioManager(); carregarPortfolio();
+        }
+
+        window.deleteModel = async (id) => {
+            if(!confirm("Are you sure?")) return;
+            window.meusModelos = window.meusModelos.filter(m => m.id !== id);
+            await supabase.from('site_content').upsert({ element_id: 'portfolio_data', content: JSON.stringify(window.meusModelos) });
+            openPortfolioManager(); carregarPortfolio();
+        }
+
+        // --- PRICES MANAGER ---
+        window.openPricesManager = () => {
+            document.getElementById('price-list-container').innerHTML = window.meusPrecos.map(p => `
+                <div class="item-row">
+                    <span style="font-weight:800; color:var(--accent-color)">${p.titulo}</span>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn-ghost" style="padding: 8px 18px; font-size: 0.75rem;" onclick="openPriceEditor(${p.id})">EDIT</button>
+                        <button class="btn-danger" style="padding: 8px 18px; font-size: 0.75rem;" onclick="deletePrice(${p.id})">REMOVE</button>
+                    </div>
+                </div>`).join('');
+            document.getElementById('pricesListModal').classList.add('active');
+        }
+
+        window.openPriceEditor = (id) => {
+            const p = id ? window.meusPrecos.find(x => x.id === id) : null;
+            document.getElementById('pr-id').value = id || "new";
+            document.getElementById('pr-valor').value = p ? p.valor : "";
+            document.getElementById('pr-titulo').value = p ? p.titulo : "";
+            document.getElementById('pr-descricao').value = p ? p.descricao : "";
+            document.getElementById('priceEditorModal').classList.add('active');
+        }
+
+        window.savePriceData = async () => {
+            const idVal = document.getElementById('pr-id').value;
+            const data = { 
+                id: idVal === "new" ? Date.now() : parseInt(idVal), 
+                valor: document.getElementById('pr-valor').value,
+                titulo: document.getElementById('pr-titulo').value,
+                descricao: document.getElementById('pr-descricao').value
+            };
+            if(idVal === "new") window.meusPrecos.push(data);
+            else window.meusPrecos[window.meusPrecos.findIndex(x => x.id === data.id)] = data;
+            await supabase.from('site_content').upsert({ element_id: 'prices_data', content: JSON.stringify(window.meusPrecos) });
+            document.getElementById('priceEditorModal').classList.remove('active');
+            openPricesManager(); carregarPrecos();
+        }
+
+        window.deletePrice = async (id) => {
+            if(!confirm("Delete this tier?")) return;
+            window.meusPrecos = window.meusPrecos.filter(x => x.id !== id);
+            await supabase.from('site_content').upsert({ element_id: 'prices_data', content: JSON.stringify(window.meusPrecos) });
+            openPricesManager(); carregarPrecos();
+        }
+
+        window.addEventListener('load', loadData);
     </script>
 </body>
 </html>
