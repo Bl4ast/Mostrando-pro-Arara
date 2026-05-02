@@ -87,7 +87,7 @@
             to { opacity: 1; transform: scale(1) translateY(0); } 
         }
 
-        /* --- FORMATO DE LISTA VERTICAL --- */
+        /* --- LISTA DE PREÇOS --- */
         .price-grid { 
             display: flex; 
             flex-direction: column; 
@@ -138,7 +138,6 @@
             line-height: 1.5;
         }
 
-        /* Estilo dos Bullets */
         .card-desc ul {
             margin: 0;
             padding-left: 20px;
@@ -224,6 +223,7 @@
         }
         .btn-primary { background: var(--accent-color); color: var(--bg-color); }
         .btn-ghost { background: transparent; color: var(--text-dim); border: 2px solid var(--border-color); }
+        .btn-danger { background: #4a1c1c; color: #ff9e9e; }
 
         .edit-control-panel {
             position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(150px);
@@ -235,10 +235,17 @@
         .edit-control-panel.active { transform: translateX(-50%) translateY(0); }
         .editable.editing { outline: 2px dashed var(--accent-color); outline-offset: 4px; cursor: text; border-radius: 4px; }
 
+        .media-row { 
+            background: rgba(0,0,0,0.3); padding: 20px; border-radius: 15px; 
+            margin-bottom: 15px; border: 1px solid var(--border-color);
+            display: grid; grid-template-columns: 1fr 2fr 1fr auto; gap: 15px; align-items: end;
+        }
+
         @media (max-width: 768px) {
             .brand-name { font-size: 1.8rem; }
             .card { padding: 20px; }
             .edit-control-panel { flex-direction: column; width: 80%; transform: translateX(-50%) translateY(300px); }
+            .media-row { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -253,77 +260,96 @@
     </header>
 
     <nav>
-        <button onclick="showView('prices')" id="btn-prices" class="active">Prices</button>
-        <button onclick="showView('portfolio')" id="btn-portfolio">Portfolio</button>
+        <button onclick="showView('prices')" id="btn-prices" class="active">Preços</button>
+        <button onclick="showView('portfolio')" id="btn-portfolio">Portfólio</button>
     </nav>
 
     <div class="container">
         <section id="view-prices" class="view active">
-            <div class="price-grid" id="prices-container">
-                <!-- Carregado via JS -->
-            </div>
+            <div class="price-grid" id="prices-container"></div>
         </section>
 
         <section id="view-portfolio" class="view">
-            <h2 class="editable" id="text-port-title" style="text-align: center; color: var(--accent-color); margin-bottom: 50px; font-size: 2rem; font-weight: 900; text-transform: uppercase; letter-spacing: 3px;">Model Showcase</h2>
+            <h2 class="editable" id="text-port-title" style="text-align: center; color: var(--accent-color); margin-bottom: 50px; font-size: 2rem; font-weight: 900; text-transform: uppercase; letter-spacing: 3px;">Showcase</h2>
             <div class="portfolio-grid" id="portfolio-container"></div>
         </section>
     </div>
 
     <footer>
-        <div class="editable" id="text-status" style="font-weight: 800; font-size: 1.2rem; margin-bottom: 15px; letter-spacing: 1px;">Commission Status: <span style="color:#4ecb71">🟢 OPEN</span></div>
+        <div class="editable" id="text-status" style="font-weight: 800; font-size: 1.2rem; margin-bottom: 15px; letter-spacing: 1px;">Status: <span style="color:#4ecb71">🟢 ABERTO</span></div>
         <p class="editable" id="text-footer">© 2026 Arara de Cartola •</p>
-        <button class="btn-admin" onclick="openLoginModal()">Admin Portal</button>
+        <button class="btn-admin" onclick="openLoginModal()">Painel Admin</button>
     </footer>
 
     <!-- MODAIS ADMIN -->
     <div id="loginModal" class="modal-overlay">
         <div class="modal-box">
-            <h3>Admin Login</h3>
-            <div class="input-group"><label>Username</label><input type="text" id="usernameInput"></div>
-            <div class="input-group"><label>Password</label><input type="password" id="passwordInput"></div>
+            <h3>Login Admin</h3>
+            <div class="input-group"><label>Usuário</label><input type="text" id="usernameInput"></div>
+            <div class="input-group"><label>Senha</label><input type="password" id="passwordInput"></div>
             <div class="modal-actions">
-                <button class="btn-ghost" onclick="closeModals()">Back</button>
-                <button class="btn-primary" onclick="verifyLogin()">Authorize</button>
+                <button class="btn-ghost" onclick="closeModals()">Voltar</button>
+                <button class="btn-primary" onclick="verifyLogin()">Entrar</button>
             </div>
         </div>
     </div>
 
     <div id="portfolioListModal" class="modal-overlay">
         <div class="modal-box large">
-            <h3>Portfolio Management</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h3 style="margin:0">Gerir Portfólio</h3>
+                <button class="btn-primary" style="padding:10px 20px; font-size:0.8rem;" onclick="openPortfolioEditor(null)">+ Novo Modelo</button>
+            </div>
             <div id="pm-list-container"></div>
-            <div class="modal-actions"><button class="btn-ghost" onclick="closeModals()">Close</button></div>
+            <div class="modal-actions"><button class="btn-ghost" onclick="closeModals()">Fechar</button></div>
+        </div>
+    </div>
+
+    <div id="portfolioEditorModal" class="modal-overlay" style="z-index:10001">
+        <div class="modal-box large">
+            <h3>Editor de Modelo</h3>
+            <input type="hidden" id="pm-id">
+            <div class="input-group"><label>Título</label><input type="text" id="pm-titulo"></div>
+            <div class="input-group"><label>Descrição</label><textarea id="pm-descricao" rows="2"></textarea></div>
+            
+            <label style="display:block; margin-bottom:10px; font-weight:bold;">Mídias (Arquivos .glb ou Imagens)</label>
+            <div id="pm-medias-container"></div>
+            <button class="btn-ghost" style="width:100%; border-style:dashed;" onclick="addMediaRow()">+ Adicionar Camada de Mídia</button>
+
+            <div class="modal-actions">
+                <button class="btn-ghost" onclick="document.getElementById('portfolioEditorModal').classList.remove('active')">Cancelar</button>
+                <button class="btn-primary" onclick="saveModelData()">Guardar</button>
+            </div>
         </div>
     </div>
 
     <div id="pricesListModal" class="modal-overlay">
         <div class="modal-box large">
-            <h3>Pricing Management</h3>
+            <h3>Gerir Preços</h3>
             <div id="price-list-container"></div>
-            <div class="modal-actions"><button class="btn-ghost" onclick="closeModals()">Close</button></div>
+            <div class="modal-actions"><button class="btn-ghost" onclick="closeModals()">Fechar</button></div>
         </div>
     </div>
 
     <div id="priceEditorModal" class="modal-overlay" style="z-index:10001">
         <div class="modal-box">
-            <h3>Price Tier Details</h3>
+            <h3>Editar Preço</h3>
             <input type="hidden" id="pr-id">
-            <div class="input-group"><label>Price Range</label><input type="text" id="pr-valor"></div>
-            <div class="input-group"><label>Service Title</label><input type="text" id="pr-titulo"></div>
-            <div class="input-group"><label>Service Details (Use &lt;ul&gt;&lt;li&gt; tags)</label><textarea id="pr-descricao" rows="5"></textarea></div>
+            <div class="input-group"><label>Valor</label><input type="text" id="pr-valor"></div>
+            <div class="input-group"><label>Título</label><input type="text" id="pr-titulo"></div>
+            <div class="input-group"><label>Descrição (HTML permitido)</label><textarea id="pr-descricao" rows="5"></textarea></div>
             <div class="modal-actions">
-                <button class="btn-ghost" onclick="document.getElementById('priceEditorModal').classList.remove('active')">Cancel</button>
-                <button class="btn-primary" onclick="savePriceData()">Update</button>
+                <button class="btn-ghost" onclick="document.getElementById('priceEditorModal').classList.remove('active')">Cancelar</button>
+                <button class="btn-primary" onclick="savePriceData()">Guardar</button>
             </div>
         </div>
     </div>
 
     <div id="editControlPanel" class="edit-control-panel">
-        <span>Admin Dashboard</span>
-        <button class="btn-ghost" onclick="openPortfolioManager()">Portfolio</button>
-        <button class="btn-ghost" onclick="openPricesManager()">Pricing</button>
-        <button class="btn-primary" onclick="toggleEditMode()">Save Changes</button>
+        <span>Modo Admin</span>
+        <button class="btn-ghost" onclick="openPortfolioManager()">Portfólio</button>
+        <button class="btn-ghost" onclick="openPricesManager()">Preços</button>
+        <button class="btn-primary" onclick="toggleEditMode()">Guardar Alterações</button>
     </div>
 
     <script type="module">
@@ -333,7 +359,6 @@
         const SUPABASE_KEY = 'sb_publishable_oteHwr_i_hGi8SFBDzZCmA_K5z7hjG5'
         const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 
-        // Novos Dados Padrão (Obrigatórios para o novo design)
         const DEFAULT_PRICES = [
             { id: 1, valor: "$25 - $100", titulo: "Base Model", descricao: "<ul><li>Basic animations included: Blink, Breathing, Hair, Wings.</li><li>Expressions: Angry, Sad, Happy, Confused.</li><li>Textures: 128x128 or 256x256.</li></ul>" },
             { id: 2, valor: "$25 - $60", titulo: "Basic Animations", descricao: "<ul><li>Walking, jumping, running, falling.</li><li>Price may increase with complexity.</li></ul>" },
@@ -345,12 +370,20 @@
         window.meusPrecos = [...DEFAULT_PRICES];
 
         window.showView = (name) => {
-            const views = document.querySelectorAll('.view');
-            const btns = document.querySelectorAll('nav button');
-            views.forEach(v => v.classList.remove('active'));
-            btns.forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
             document.getElementById('view-'+name).classList.add('active');
             document.getElementById('btn-'+name).classList.add('active');
+        }
+
+        window.mudarMidia = (id, tipo, url, btn) => {
+            const area = document.getElementById(`media-${id}`);
+            if(tipo === '3d') area.innerHTML = `<model-viewer src="${url}" auto-rotate camera-controls autoplay shadow-intensity="1"></model-viewer>`;
+            else if(tipo === 'img') area.innerHTML = `<img src="${url}">`;
+            else area.innerHTML = `<iframe src="${url}"></iframe>`;
+            
+            btn.parentElement.querySelectorAll('.item-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
         }
 
         window.carregarPortfolio = () => {
@@ -363,6 +396,14 @@
                     <div class="model-info">
                         <h3>${m.titulo}</h3>
                         <p>${m.descricao}</p>
+                        <div class="itens-container">
+                            ${m.itens.map((it, idx) => `
+                                <div class="item-btn ${idx===0?'active':''}" 
+                                     style="${it.icone?`background-image:url('${it.icone}')`:''}" 
+                                     onclick="mudarMidia(${m.id}, '${it.tipo}', '${it.arquivo}', this)">
+                                     ${it.icone?'':it.tipo.toUpperCase()}
+                                </div>`).join('')}
+                        </div>
                     </div>
                 </div>`).join('');
         }
@@ -384,13 +425,8 @@
                     const el = document.getElementById(r.element_id);
                     if(r.element_id === 'portfolio_data') window.meusModelos = JSON.parse(r.content);
                     else if(r.element_id === 'prices_data') {
-                        // Força a atualização se os dados salvos não tiverem a estrutura de lista <ul>
                         const saved = JSON.parse(r.content);
-                        if(saved[0] && !saved[0].descricao.includes('<ul>')) {
-                            console.log("Detectado formato antigo, forçando atualização...");
-                        } else {
-                            window.meusPrecos = saved;
-                        }
+                        if(saved[0]?.descricao.includes('<ul>')) window.meusPrecos = saved;
                     } else if(el) {
                         if(el.tagName === 'IMG') el.src = r.content;
                         else el.innerHTML = r.content;
@@ -420,17 +456,80 @@
             } else {
                 panel.classList.remove('active');
                 editables.forEach(el => { el.classList.remove('editing'); el.contentEditable = false; });
-                // Salvar todos os campos editáveis e os arrays de dados
                 for(const el of editables) await supabase.from('site_content').upsert({ element_id: el.id, content: el.innerHTML });
                 await supabase.from('site_content').upsert({ element_id: 'prices_data', content: JSON.stringify(window.meusPrecos) });
+                await supabase.from('site_content').upsert({ element_id: 'portfolio_data', content: JSON.stringify(window.meusModelos) });
             }
         }
 
+        // --- GESTÃO PORTFÓLIO ---
+        window.openPortfolioManager = () => {
+            document.getElementById('pm-list-container').innerHTML = window.meusModelos.map(m => `
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px; padding:15px; background:rgba(0,0,0,0.2); border-radius:10px; align-items:center;">
+                    <span>${m.titulo}</span>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn-ghost" onclick="openPortfolioEditor(${m.id})">EDITAR</button>
+                        <button class="btn-danger" onclick="deleteModel(${m.id})">APAGAR</button>
+                    </div>
+                </div>`).join('');
+            document.getElementById('portfolioListModal').classList.add('active');
+        }
+
+        window.openPortfolioEditor = (id) => {
+            const m = id ? window.meusModelos.find(x => x.id === id) : null;
+            document.getElementById('pm-id').value = id || "new";
+            document.getElementById('pm-titulo').value = m ? m.titulo : "";
+            document.getElementById('pm-descricao').value = m ? m.descricao : "";
+            document.getElementById('pm-medias-container').innerHTML = "";
+            if(m) m.itens.forEach(it => addMediaRow(it.tipo, it.arquivo, it.icone));
+            else addMediaRow();
+            document.getElementById('portfolioEditorModal').classList.add('active');
+        }
+
+        window.addMediaRow = (tipo='3d', url='', ico='') => {
+            const div = document.createElement('div');
+            div.className = 'media-row';
+            div.innerHTML = `
+                <div class="input-group" style="margin:0"><label>Tipo</label><select class="m-tipo"><option value="3d" ${tipo==='3d'?'selected':''}>3D (.glb)</option><option value="img" ${tipo==='img'?'selected':''}>Imagem</option></select></div>
+                <div class="input-group" style="margin:0"><label>URL Arquivo</label><input type="text" class="m-url" value="${url}"></div>
+                <div class="input-group" style="margin:0"><label>URL Ícone</label><input type="text" class="m-ico" value="${ico}"></div>
+                <button class="btn-danger" style="padding:10px" onclick="this.parentElement.remove()">X</button>`;
+            document.getElementById('pm-medias-container').appendChild(div);
+        }
+
+        window.saveModelData = () => {
+            const idVal = document.getElementById('pm-id').value;
+            const itens = Array.from(document.querySelectorAll('.media-row')).map(r => ({
+                tipo: r.querySelector('.m-tipo').value,
+                arquivo: r.querySelector('.m-url').value,
+                icone: r.querySelector('.m-ico').value
+            }));
+            const data = {
+                id: idVal === "new" ? Date.now() : parseInt(idVal),
+                titulo: document.getElementById('pm-titulo').value,
+                descricao: document.getElementById('pm-descricao').value,
+                itens: itens
+            };
+            if(idVal === "new") window.meusModelos.push(data);
+            else window.meusModelos[window.meusModelos.findIndex(x => x.id === data.id)] = data;
+            document.getElementById('portfolioEditorModal').classList.remove('active');
+            window.carregarPortfolio();
+            openPortfolioManager();
+        }
+
+        window.deleteModel = (id) => {
+            if(!confirm("Apagar este modelo?")) return;
+            window.meusModelos = window.meusModelos.filter(x => x.id !== id);
+            window.carregarPortfolio();
+            openPortfolioManager();
+        }
+
+        // --- GESTÃO PREÇOS ---
         window.openPricesManager = () => {
             document.getElementById('price-list-container').innerHTML = window.meusPrecos.map(p => `
                 <div style="display:flex; justify-content:space-between; margin-bottom:10px; padding:15px; background:rgba(0,0,0,0.2); border-radius:10px;">
                     <span>${p.titulo}</span>
-                    <button class="btn-ghost" onclick="openPriceEditor(${p.id})">EDIT</button>
+                    <button class="btn-ghost" onclick="openPriceEditor(${p.id})">EDITAR</button>
                 </div>`).join('');
             document.getElementById('pricesListModal').classList.add('active');
         }
@@ -448,10 +547,8 @@
             const id = parseInt(document.getElementById('pr-id').value);
             const idx = window.meusPrecos.findIndex(x => x.id === id);
             window.meusPrecos[idx] = {
-                id: id,
-                valor: document.getElementById('pr-valor').value,
-                titulo: document.getElementById('pr-titulo').value,
-                descricao: document.getElementById('pr-descricao').value
+                id: id, valor: document.getElementById('pr-valor').value,
+                titulo: document.getElementById('pr-titulo').value, descricao: document.getElementById('pr-descricao').value
             };
             document.getElementById('priceEditorModal').classList.remove('active');
             window.carregarPrecos();
