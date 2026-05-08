@@ -1,3 +1,12 @@
+Aqui está o seu código modificado! Adicionei uma camada de segurança usando JavaScript para verificar o `window.location.hostname`.
+
+Para garantir que a página não "pisque" o conteúdo antes de bloquear, a página oculta tudo imediatamente caso esteja no domínio errado e, em seguida, remove todo o conteúdo original do HTML (para que curiosos não consigam ver o site apenas desativando o bloqueio pelo Inspecionar Elemento).
+
+A tela de bloqueio foi estilizada utilizando exatamente as mesmas cores e variáveis CSS do seu tema (tons de café e dourado/cobre).
+
+Pode copiar e substituir todo o seu código por este:
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,8 +14,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arara de Cartola | Commissions</title>
     
-    <!-- Model Viewer -->
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+
+    <script>
+        const ALLOWED_DOMAIN = "araraverificaisso.vercel.app";
+        const currentDomain = window.location.hostname;
+        
+        // Verifica se o domínio atual é diferente do permitido
+        if (currentDomain !== ALLOWED_DOMAIN) {
+            // Oculta a página imediatamente durante o carregamento para evitar flashes
+            document.documentElement.style.opacity = '0';
+            
+            document.addEventListener("DOMContentLoaded", () => {
+                // Remove completamente o conteúdo da aplicação do código fonte no navegador
+                const appContent = document.getElementById('app-content');
+                if(appContent) appContent.remove();
+                
+                // Exibe a tela de bloqueio
+                document.getElementById('domain-blocker').style.display = 'flex';
+                
+                // Restaura a opacidade com um efeito suave
+                document.documentElement.style.transition = 'opacity 0.4s ease';
+                document.documentElement.style.opacity = '1';
+            });
+        }
+    </script>
     
     <style>
         :root {
@@ -32,6 +64,62 @@
             line-height: 1.6;
         }
 
+        /* --- TELA DE BLOQUEIO DE DOMÍNIO --- */
+        #domain-blocker {
+            position: fixed;
+            inset: 0;
+            background-color: var(--bg-color);
+            z-index: 9999999;
+            display: none; /* Mantém escondido por padrão, o JS ativa */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .blocker-icon {
+            width: 80px;
+            height: 80px;
+            color: var(--accent-color);
+            margin-bottom: 25px;
+            animation: lockPulse 2s infinite ease-in-out;
+        }
+
+        .blocker-title {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            font-weight: 900;
+            margin: 0 0 15px 0;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .blocker-text {
+            font-size: 1.2rem;
+            color: var(--text-dim);
+            max-width: 450px;
+            line-height: 1.6;
+        }
+
+        .blocker-domain-name {
+            display: block;
+            color: var(--text-main);
+            font-weight: 900;
+            font-size: 1.3rem;
+            margin-top: 10px;
+            background: rgba(166, 137, 102, 0.1);
+            padding: 10px 20px;
+            border-radius: var(--radius-full);
+            border: 1px solid var(--border-color);
+        }
+
+        @keyframes lockPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* (Todo o seu CSS original continua abaixo) */
         header { text-align: center; padding: 80px 20px 40px 20px; }
 
         .logo-container {
@@ -251,108 +339,119 @@
 </head>
 <body>
 
-    <header>
-        <div class="logo-container">
-            <img id="main-logo" src="fuuurgh.png" alt="Logo">
-        </div>
-        <h1 class="brand-name editable" id="text-brand">Arara de Cartola</h1>
-        <p class="editable" id="text-subtitle" style="color: var(--text-dim); font-weight: 600; margin-top: 15px; font-size: 1.1rem; letter-spacing: 1px;">Minecraft Skin & Model Commissions</p>
-    </header>
-
-    <nav>
-        <button onclick="showView('prices')" id="btn-prices" class="active">Preços</button>
-        <button onclick="showView('portfolio')" id="btn-portfolio">Portfólio</button>
-    </nav>
-
-    <div class="container">
-        <section id="view-prices" class="view active">
-            <div class="price-grid" id="prices-container"></div>
-        </section>
-
-        <section id="view-portfolio" class="view">
-            <h2 class="editable" id="text-port-title" style="text-align: center; color: var(--accent-color); margin-bottom: 50px; font-size: 2rem; font-weight: 900; text-transform: uppercase; letter-spacing: 3px;">Showcase</h2>
-            <div class="portfolio-grid" id="portfolio-container"></div>
-        </section>
+    <div id="domain-blocker">
+        <svg class="blocker-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+        <h1 class="blocker-title">Acesso Restrito</h1>
+        <p class="blocker-text">
+            Esta aplicação só pode ser executada no domínio oficial:
+            <span class="blocker-domain-name">araraverificaisso.vercel.app</span>
+        </p>
     </div>
 
-    <footer>
-        <div class="editable" id="text-status" style="font-weight: 800; font-size: 1.2rem; margin-bottom: 15px; letter-spacing: 1px;">Status: <span style="color:#4ecb71">🟢 ABERTO</span></div>
-        <p class="editable" id="text-footer">© 2026 Arara de Cartola •</p>
-        <button class="btn-admin" onclick="openLoginModal()">Painel Admin</button>
-    </footer>
+    <div id="app-content">
+        <header>
+            <div class="logo-container">
+                <img id="main-logo" src="fuuurgh.png" alt="Logo">
+            </div>
+            <h1 class="brand-name editable" id="text-brand">Arara de Cartola</h1>
+            <p class="editable" id="text-subtitle" style="color: var(--text-dim); font-weight: 600; margin-top: 15px; font-size: 1.1rem; letter-spacing: 1px;">Minecraft Skin & Model Commissions</p>
+        </header>
 
-    <!-- MODAIS ADMIN -->
-    <div id="loginModal" class="modal-overlay">
-        <div class="modal-box">
-            <h3>Login Admin</h3>
-            <div class="input-group"><label>Usuário</label><input type="text" id="usernameInput"></div>
-            <div class="input-group"><label>Senha</label><input type="password" id="passwordInput"></div>
-            <div class="modal-actions">
-                <button class="btn-ghost" onclick="closeModals()">Voltar</button>
-                <button class="btn-primary" onclick="verifyLogin()">Entrar</button>
+        <nav>
+            <button onclick="showView('prices')" id="btn-prices" class="active">Preços</button>
+            <button onclick="showView('portfolio')" id="btn-portfolio">Portfólio</button>
+        </nav>
+
+        <div class="container">
+            <section id="view-prices" class="view active">
+                <div class="price-grid" id="prices-container"></div>
+            </section>
+
+            <section id="view-portfolio" class="view">
+                <h2 class="editable" id="text-port-title" style="text-align: center; color: var(--accent-color); margin-bottom: 50px; font-size: 2rem; font-weight: 900; text-transform: uppercase; letter-spacing: 3px;">Showcase</h2>
+                <div class="portfolio-grid" id="portfolio-container"></div>
+            </section>
+        </div>
+
+        <footer>
+            <div class="editable" id="text-status" style="font-weight: 800; font-size: 1.2rem; margin-bottom: 15px; letter-spacing: 1px;">Status: <span style="color:#4ecb71">🟢 ABERTO</span></div>
+            <p class="editable" id="text-footer">© 2026 Arara de Cartola •</p>
+            <button class="btn-admin" onclick="openLoginModal()">Painel Admin</button>
+        </footer>
+
+        <div id="loginModal" class="modal-overlay">
+            <div class="modal-box">
+                <h3>Login Admin</h3>
+                <div class="input-group"><label>Usuário</label><input type="text" id="usernameInput"></div>
+                <div class="input-group"><label>Senha</label><input type="password" id="passwordInput"></div>
+                <div class="modal-actions">
+                    <button class="btn-ghost" onclick="closeModals()">Voltar</button>
+                    <button class="btn-primary" onclick="verifyLogin()">Entrar</button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div id="portfolioListModal" class="modal-overlay">
-        <div class="modal-box large">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                <h3 style="margin:0">Gerir Portfólio</h3>
-                <button class="btn-primary" style="padding:10px 20px; font-size:0.8rem;" onclick="openPortfolioEditor(null)">+ Novo Modelo</button>
-            </div>
-            <div id="pm-list-container"></div>
-            <div class="modal-actions"><button class="btn-ghost" onclick="closeModals()">Fechar</button></div>
-        </div>
-    </div>
-
-    <div id="portfolioEditorModal" class="modal-overlay" style="z-index:10001">
-        <div class="modal-box large">
-            <h3>Editor de Modelo</h3>
-            <input type="hidden" id="pm-id">
-            <div class="input-group"><label>Título</label><input type="text" id="pm-titulo"></div>
-            <div class="input-group"><label>Descrição</label><textarea id="pm-descricao" rows="2"></textarea></div>
-            
-            <label style="display:block; margin-bottom:10px; font-weight:bold;">Mídias (Arquivos .glb ou Imagens)</label>
-            <div id="pm-medias-container"></div>
-            <button class="btn-ghost" style="width:100%; border-style:dashed;" onclick="addMediaRow()">+ Adicionar Camada de Mídia</button>
-
-            <div class="modal-actions">
-                <button class="btn-ghost" onclick="document.getElementById('portfolioEditorModal').classList.remove('active')">Cancelar</button>
-                <button class="btn-primary" onclick="saveModelData()">Guardar</button>
+        <div id="portfolioListModal" class="modal-overlay">
+            <div class="modal-box large">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                    <h3 style="margin:0">Gerir Portfólio</h3>
+                    <button class="btn-primary" style="padding:10px 20px; font-size:0.8rem;" onclick="openPortfolioEditor(null)">+ Novo Modelo</button>
+                </div>
+                <div id="pm-list-container"></div>
+                <div class="modal-actions"><button class="btn-ghost" onclick="closeModals()">Fechar</button></div>
             </div>
         </div>
-    </div>
 
-    <div id="pricesListModal" class="modal-overlay">
-        <div class="modal-box large">
-            <h3>Gerir Preços</h3>
-            <div id="price-list-container"></div>
-            <div class="modal-actions"><button class="btn-ghost" onclick="closeModals()">Fechar</button></div>
-        </div>
-    </div>
+        <div id="portfolioEditorModal" class="modal-overlay" style="z-index:10001">
+            <div class="modal-box large">
+                <h3>Editor de Modelo</h3>
+                <input type="hidden" id="pm-id">
+                <div class="input-group"><label>Título</label><input type="text" id="pm-titulo"></div>
+                <div class="input-group"><label>Descrição</label><textarea id="pm-descricao" rows="2"></textarea></div>
+                
+                <label style="display:block; margin-bottom:10px; font-weight:bold;">Mídias (Arquivos .glb ou Imagens)</label>
+                <div id="pm-medias-container"></div>
+                <button class="btn-ghost" style="width:100%; border-style:dashed;" onclick="addMediaRow()">+ Adicionar Camada de Mídia</button>
 
-    <div id="priceEditorModal" class="modal-overlay" style="z-index:10001">
-        <div class="modal-box">
-            <h3>Editar Preço</h3>
-            <input type="hidden" id="pr-id">
-            <div class="input-group"><label>Valor</label><input type="text" id="pr-valor"></div>
-            <div class="input-group"><label>Título</label><input type="text" id="pr-titulo"></div>
-            <div class="input-group"><label>Descrição (HTML permitido)</label><textarea id="pr-descricao" rows="5"></textarea></div>
-            <div class="modal-actions">
-                <button class="btn-ghost" onclick="document.getElementById('priceEditorModal').classList.remove('active')">Cancelar</button>
-                <button class="btn-primary" onclick="savePriceData()">Guardar</button>
+                <div class="modal-actions">
+                    <button class="btn-ghost" onclick="document.getElementById('portfolioEditorModal').classList.remove('active')">Cancelar</button>
+                    <button class="btn-primary" onclick="saveModelData()">Guardar</button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div id="editControlPanel" class="edit-control-panel">
-        <span>Modo Admin</span>
-        <button class="btn-ghost" onclick="openPortfolioManager()">Portfólio</button>
-        <button class="btn-ghost" onclick="openPricesManager()">Preços</button>
-        <button class="btn-primary" onclick="toggleEditMode()">Guardar Alterações</button>
-    </div>
+        <div id="pricesListModal" class="modal-overlay">
+            <div class="modal-box large">
+                <h3>Gerir Preços</h3>
+                <div id="price-list-container"></div>
+                <div class="modal-actions"><button class="btn-ghost" onclick="closeModals()">Fechar</button></div>
+            </div>
+        </div>
 
-    <script type="module">
+        <div id="priceEditorModal" class="modal-overlay" style="z-index:10001">
+            <div class="modal-box">
+                <h3>Editar Preço</h3>
+                <input type="hidden" id="pr-id">
+                <div class="input-group"><label>Valor</label><input type="text" id="pr-valor"></div>
+                <div class="input-group"><label>Título</label><input type="text" id="pr-titulo"></div>
+                <div class="input-group"><label>Descrição (HTML permitido)</label><textarea id="pr-descricao" rows="5"></textarea></div>
+                <div class="modal-actions">
+                    <button class="btn-ghost" onclick="document.getElementById('priceEditorModal').classList.remove('active')">Cancelar</button>
+                    <button class="btn-primary" onclick="savePriceData()">Guardar</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="editControlPanel" class="edit-control-panel">
+            <span>Modo Admin</span>
+            <button class="btn-ghost" onclick="openPortfolioManager()">Portfólio</button>
+            <button class="btn-ghost" onclick="openPricesManager()">Preços</button>
+            <button class="btn-primary" onclick="toggleEditMode()">Guardar Alterações</button>
+        </div>
+    </div> <script type="module">
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
         const SUPABASE_URL = 'https://afrhflyibkjywsuefgno.supabase.co' 
@@ -419,6 +518,9 @@
         }
 
         async function loadData() {
+            // Se estiver bloqueado, nem perde tempo requisitando o banco de dados
+            if(document.getElementById('domain-blocker').style.display === 'flex') return;
+
             const { data } = await supabase.from('site_content').select('*');
             if(data) {
                 data.forEach(r => {
@@ -559,3 +661,5 @@
     </script>
 </body>
 </html>
+
+```
